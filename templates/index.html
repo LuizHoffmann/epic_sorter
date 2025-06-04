@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Escolha sua música favorita</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>Qual música você prefere?</h2>
+    <form method="post" action="/choose/{{ session_id }}">
+        <button type="submit" name="choice" value="left">{{ left }}</button>
+        <button type="submit" name="choice" value="right">{{ right }}</button>
+    </form>
+</body>
+</html>

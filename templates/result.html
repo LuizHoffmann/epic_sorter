@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resultado final</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>Sua lista ordenada:</h2>
+    <ol>
+    {% for musica in result %}
+        <li>{{ musica }}</li>
+    {% endfor %}
+    </ol>
+</body>
+</html>
