@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Resultado final</title>
+    <title>Resultado Final</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <h2>Sua lista ordenada:</h2>
     <ol>
-    {% for musica in result %}
-        <li>{{ musica }}</li>
-    {% endfor %}
+        {% for item in result %}
+        <li>{{ item }}</li>
+        {% endfor %}
     </ol>
+
+    <form action="/" method="get" style="margin-top: 40px;">
+        <button type="submit">Recomeçar ranking</button>
+    </form>
 </body>
 </html>
