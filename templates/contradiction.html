@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contradição detectada</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>⚠️ Contradição detectada!</h2>
+    <p>Sua escolha indica que você gosta mais de <strong>{{ winner }}</strong> do que <strong>{{ loser }}</strong>,</p>
+    <p>mas isso contradiz comparações anteriores.</p>
+
+    <form method="get" action="/merge/{{ session_id }}">
+        <button type="submit">Voltar e tentar de novo</button>
+    </form>
+</body>
+</html>

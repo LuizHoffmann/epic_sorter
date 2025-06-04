@@ -10,7 +10,6 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Substitua aqui pelos nomes das 40 músicas do EPIC
 ITEMS = [
     "The Horse and the Infant", "Just a Man", "Full Speed Ahead", "Open Arms", "Warrior of the Mind",
     "Polyphemus", "Survive", "Remember Them", "My Goodbye",
@@ -53,6 +52,20 @@ def build_merge_schedule(items):
 
     return schedule
 
+def has_cycle(graph, start, target, visited=None):
+    """Retorna True se existe caminho de start até target no grafo."""
+    if visited is None:
+        visited = set()
+    if start == target:
+        return True
+    visited.add(start)
+    for neighbor in graph.get(start, []):
+        if neighbor not in visited:
+            if has_cycle(graph, neighbor, target, visited):
+                return True
+    return False
+
+
 # ----------------------------
 # Rota inicial: cria a sessão
 # ----------------------------
@@ -66,7 +79,8 @@ async def start(request: Request):
         "schedule": build_merge_schedule(items),
         "current": None,
         "stack": [],
-        "final_result": None
+        "final_result": None,
+        "preferences": {}  # grafo de comparação
     }
 
     return RedirectResponse(url=f"/merge/{session_id}")
@@ -138,7 +152,23 @@ async def choose(session_id: str, choice: str = Form(...)):
         return RedirectResponse(url="/")
 
     curr = session["current"]
+    winner = curr["left"][0] if choice == "left" else curr["right"][0]
+    loser = curr["right"][0] if choice == "left" else curr["left"][0]
 
+    # Checa contradição: já existe loser > winner?
+    if has_cycle(session["preferences"], loser, winner):
+        # Mostra página de erro
+        return templates.TemplateResponse("contradiction.html", {
+            "request": Request,
+            "winner": winner,
+            "loser": loser,
+            "session_id": session_id
+        })
+
+    # Atualiza grafo de preferências
+    session["preferences"].setdefault(winner, set()).add(loser)
+
+    # Atualiza ordenação
     if choice == "left":
         curr["result"].append(curr["left"].pop(0))
     else:
